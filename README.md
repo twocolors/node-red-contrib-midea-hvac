@@ -15,5 +15,7 @@ Node-Red Nodes for HVAC Midea
 
 ### Credits
 This plugin based on code
+
 [ioBroker.midea](https://github.com/TA2k/ioBroker.midea/)
+
 [homebridge-midea](https://github.com/ttimpe/homebridge-midea/)
