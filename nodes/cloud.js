@@ -12,7 +12,7 @@ module.exports = function (RED) {
     node._successful = function (res) {
       if (!node.midea) {
         node.error('The Account in Midea Clous is not configured, please check your settings');
-        node.status({ fill: 'red', shape: 'dot', text: error.message });
+        node.status({ fill: 'red', shape: 'dot', text: 'Failed' });
         setTimeout(() => node.status({}), 3000);
         return;
       }
@@ -60,8 +60,8 @@ module.exports = function (RED) {
     }
 
     node._failed = function (error) {
-      node.error(`Midea: ${error.message}`);
-      node.status({ fill: 'red', shape: 'dot', text: error.message });
+      node.error(`Midea: ${error}`);
+      node.status({ fill: 'red', shape: 'dot', text: error });
       setTimeout(() => node.status({}), 3000);
     }
 
@@ -71,34 +71,50 @@ module.exports = function (RED) {
       node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
       if (!msg.payload || typeof (msg.payload) === 'number') {
         node.midea.updateValues(applianceId).then(response => {
-          msg.payload = node._successful(response);
-          node.send(msg);
+          if (response.error) {
+            node._failed(response.error);
+          } else {
+            msg.payload = node._successful(response);
+            node.send(msg);
+          }
         }).catch(() => {
           node.midea.login().then(() => {
             node.midea.updateValues(applianceId).then(response => {
-              msg.payload = node._successful(response);
-              node.send(msg);
+              if (response.error) {
+                node._failed(response.error);
+              } else {
+                msg.payload = node._successful(response);
+                node.send(msg);
+              }
             }).catch(error => {
-              node._failed(error);
+              node._failed(error.message);
             });
           }).catch(error => {
-            node._failed(error);
+            node._failed(error.message);
           });
         });
       } else {
         node.midea.sendToDevice(applianceId, msg.payload).then(response => {
-          msg.payload = node._successful(response);
-          node.send(msg);
+          if (response.error) {
+            node._failed(response.error);
+          } else {
+            msg.payload = node._successful(response);
+            node.send(msg);
+          }
         }).catch(() => {
           node.midea.login().then(() => {
             node.midea.sendToDevice(applianceId, msg.payload).then(response => {
-              msg.payload = node._successful(response);
-              node.send(msg);
+              if (response.error) {
+                node._failed(response.error);
+              } else {
+                msg.payload = node._successful(response);
+                node.send(msg);
+              }
             }).catch(error => {
-              node._failed(error);
+              node._failed(error.message);
             });
           }).catch(error => {
-            node._failed(error);
+            node._failed(error.message);
           });
         });
       }
