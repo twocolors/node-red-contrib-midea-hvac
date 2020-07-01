@@ -25,6 +25,7 @@ module.exports = function (RED) {
         sessionId: node.midea.sessionId,
         accessToken: node.midea.accessToken,
         userId: node.midea.userId,
+        dataKey: node.midea.dataKey,
         powerState: res.powerState,
         imodeResume: res.imodeResume,
         timerMode: res.timerMode,
