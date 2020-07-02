@@ -107,14 +107,14 @@ module.exports = function (RED) {
           }
         });
       } else {
-        node.midea.sendToDevice(applianceId).then(response => {
+        node.midea.sendToDevice(applianceId, msg.payload).then(response => {
           msg.payload = node._successful(response);
           node.send(msg);
         }).catch((error) => {
           let errorCode = error.message.split(':')[0];
           if (errorCode === 3123 || errorCode === 3176) {
             node.midea.getUserList().then(() => {
-              node.midea.sendToDevice(applianceId).then(response => {
+              node.midea.sendToDevice(applianceId, msg.payload).then(response => {
                 msg.payload = node._successful(response);
                 node.send(msg);
               }).catch(error => {
@@ -130,7 +130,7 @@ module.exports = function (RED) {
             });
           } else {
             node.midea.login().then(() => {
-              node.midea.sendToDevice(applianceId).then(response => {
+              node.midea.sendToDevice(applianceId, msg.payload).then(response => {
                 msg.payload = node._successful(response);
                 node.send(msg);
               }).catch(error => {
