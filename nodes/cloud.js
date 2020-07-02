@@ -70,53 +70,76 @@ module.exports = function (RED) {
       let applianceId = node.config.device.split(':')[1];
 
       node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
+
       if (!msg.payload || typeof (msg.payload) === 'number') {
         node.midea.updateValues(applianceId).then(response => {
-          if (response.error) {
-            node._failed(response.error);
-          } else {
-            msg.payload = node._successful(response);
-            node.send(msg);
-          }
-        }).catch(() => {
-          node.midea.login().then(() => {
-            node.midea.updateValues(applianceId).then(response => {
-              if (response.error) {
-                node._failed(response.error);
-              } else {
+          msg.payload = node._successful(response);
+          node.send(msg);
+        }).catch((error) => {
+          let errorCode = error.message.split(':')[0];
+          if (errorCode === 3123 || errorCode === 3176) {
+            node.midea.getUserList().then(() => {
+              node.midea.updateValues(applianceId).then(response => {
                 msg.payload = node._successful(response);
                 node.send(msg);
-              }
+              }).catch(error => {
+                let errorCode = error.message.split(':')[0];
+                if (errorCode === 3123 || errorCode === 3176) {
+                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
+                } else {
+                  node._failed(error.message);
+                }
+              });
             }).catch(error => {
               node._failed(error.message);
             });
-          }).catch(error => {
-            node._failed(error.message);
-          });
+          } else {
+            node.midea.login().then(() => {
+              node.midea.updateValues(applianceId).then(response => {
+                msg.payload = node._successful(response);
+                node.send(msg);
+              }).catch(error => {
+                node._failed(error.message);
+              });
+            }).catch(error => {
+              node._failed(error.message);
+            });
+          }
         });
       } else {
-        node.midea.sendToDevice(applianceId, msg.payload).then(response => {
-          if (response.error) {
-            node._failed(response.error);
-          } else {
-            msg.payload = node._successful(response);
-            node.send(msg);
-          }
-        }).catch(() => {
-          node.midea.login().then(() => {
-            node.midea.sendToDevice(applianceId, msg.payload).then(response => {
-              if (response.error) {
-                node._failed(response.error);
-              } else {
+        node.midea.sendToDevice(applianceId).then(response => {
+          msg.payload = node._successful(response);
+          node.send(msg);
+        }).catch((error) => {
+          let errorCode = error.message.split(':')[0];
+          if (errorCode === 3123 || errorCode === 3176) {
+            node.midea.getUserList().then(() => {
+              node.midea.sendToDevice(applianceId).then(response => {
                 msg.payload = node._successful(response);
                 node.send(msg);
-              }
+              }).catch(error => {
+                let errorCode = error.message.split(':')[0];
+                if (errorCode === 3123 || errorCode === 3176) {
+                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
+                } else {
+                  node._failed(error.message);
+                }
+              });
             }).catch(error => {
               node._failed(error.message);
             });
-          }).catch(error => {
-            node._failed(error.message);
-          });
+          } else {
+            node.midea.login().then(() => {
+              node.midea.sendToDevice(applianceId).then(response => {
+                msg.payload = node._successful(response);
+                node.send(msg);
+              }).catch(error => {
+                node._failed(error.message);
+              });
+            }).catch(error => {
+              node._failed(error.message);
+            });
+          }
         });
       }
     });
