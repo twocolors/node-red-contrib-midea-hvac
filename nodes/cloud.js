@@ -71,20 +71,21 @@ module.exports = function (RED) {
 
       node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
 
+      // js hall ...
       if (!msg.payload || typeof (msg.payload) === 'number') {
         node.midea.updateValues(applianceId).then(response => {
           msg.payload = node._successful(response);
           node.send(msg);
         }).catch((error) => {
           let errorCode = error.message.split(':')[0];
-          if (errorCode === 3123 || errorCode === 3176) {
+          if (errorCode === '3123' || errorCode === '3176') {
             node.midea.getUserList().then(() => {
               node.midea.updateValues(applianceId).then(response => {
                 msg.payload = node._successful(response);
                 node.send(msg);
               }).catch(error => {
                 let errorCode = error.message.split(':')[0];
-                if (errorCode === 3123 || errorCode === 3176) {
+                if (errorCode === '3123' || errorCode === '3176') {
                   node._failed(`Command wrong or device (${applianceId}) not reachable`);
                 } else {
                   node._failed(error.message);
@@ -99,7 +100,11 @@ module.exports = function (RED) {
                 msg.payload = node._successful(response);
                 node.send(msg);
               }).catch(error => {
-                node._failed(error.message);
+                if (errorCode === '3123' || errorCode === '3176') {
+                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
+                } else {
+                  node._failed(error.message);
+                }
               });
             }).catch(error => {
               node._failed(error.message);
@@ -112,14 +117,14 @@ module.exports = function (RED) {
           node.send(msg);
         }).catch((error) => {
           let errorCode = error.message.split(':')[0];
-          if (errorCode === 3123 || errorCode === 3176) {
+          if (errorCode === '3123' || errorCode === '3176') {
             node.midea.getUserList().then(() => {
               node.midea.sendToDevice(applianceId, msg.payload).then(response => {
                 msg.payload = node._successful(response);
                 node.send(msg);
               }).catch(error => {
                 let errorCode = error.message.split(':')[0];
-                if (errorCode === 3123 || errorCode === 3176) {
+                if (errorCode === '3123' || errorCode === '3176') {
                   node._failed(`Command wrong or device (${applianceId}) not reachable`);
                 } else {
                   node._failed(error.message);
@@ -134,7 +139,11 @@ module.exports = function (RED) {
                 msg.payload = node._successful(response);
                 node.send(msg);
               }).catch(error => {
-                node._failed(error.message);
+                if (errorCode === '3123' || errorCode === '3176') {
+                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
+                } else {
+                  node._failed(error.message);
+                }
               });
             }).catch(error => {
               node._failed(error.message);
