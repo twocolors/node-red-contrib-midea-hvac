@@ -19,3 +19,7 @@ This plugin based on code
 [ioBroker.midea](https://github.com/TA2k/ioBroker.midea/)
 
 [homebridge-midea](https://github.com/ttimpe/homebridge-midea/)
+
+
+<img src="https://github.com/twocolors/node-red-contrib-midea/blob/master/readme/1.png?raw=true">
+<img src="https://github.com/twocolors/node-red-contrib-midea/blob/master/readme/2.png?raw=true">
