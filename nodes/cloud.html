@@ -54,7 +54,7 @@
         $('#node-input-device').val(value);
 
         if (account && account.id) {
-          $.getJSON('/midea/cloud/devices', {
+          $.getJSON('midea/cloud/devices', {
             controller: account.id,
           }).done(function (data, textStatus, jqXHR) {
             if (!data.error) {
