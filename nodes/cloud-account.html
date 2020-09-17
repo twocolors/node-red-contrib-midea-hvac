@@ -1,5 +1,4 @@
 <script type="text/html" data-template-name="midea-cloud-account">
-
   <div class="form-row">
     <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-config-input-name" placeholder="Name">
@@ -14,17 +13,19 @@
     <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
     <input type="password" id="node-config-input-password" placeholder="password">
   </div>
+</script>
 
-  <!-- <div class="form-row">
-    <label for="node-config-input-token"><i class="fa fa-globe"></i> Token</label>
-    <input type="text" id="node-config-input-token" placeholder="Access Token">
-  </div>
-
-  <div class="form-row">
-    <label for="node-config-input-session"><i class="fa fa-globe"></i> Session</label>
-    <input type="text" id="node-config-input-session" placeholder="Session Id">
-  </div> -->
-
+<script type="text/x-red" data-help-name="midea-cloud-account">
+  <p>Connection to Midea Cloud</p>
+  <h3>Configuration</h3>
+  <dl class="message-properties">
+    <dt class="optional">Name<span class="property-type">string</span></dt>
+    <dd>Choose any name to identify your node</dd>
+    <dt class="required">Midea Username<span class="property-type">string</span></dt>
+    <dd></dd>
+    <dt class="required">Midea Password<span class="property-type">string</span></dt>
+    <dd></dd>
+  </dl>
 </script>
 
 <script type="text/javascript">
@@ -33,37 +34,10 @@
     defaults: {
       name: { value: '' },
       username: { value: '', required: true },
-      password: { value: '', required: true },
-      // token: { value: '' },
-      // session: { value: '' }
+      password: { value: '', required: true }
     },
     label: function () {
       return (this.name || this.username || 'midea cloud account');
-    },
-    oneditprepare: function () {
-      // let node = this;
-
-      // $('#node-config-input-password').on('change', function () {
-      //   let username = $('#node-config-input-username').val();
-      //   let password = $('#node-config-input-password').val();
-
-      //   if (username != node.username || password != node.password) {
-      //     RED.notify('Try Authentication');
-
-      //     $.getJSON('midea/cloud/login', {
-      //       controller: node.id,
-      //       username: username,
-      //       password: password
-      //     }).done(function (data, textStatus, jqXHR) {
-      //       console.log(data);
-      //       if (!data.error) {
-      //         RED.notify('Successful Authentication', 'success');
-      //       } else {
-      //         RED.notify(data.error, 'error');
-      //       }
-      //     });
-      //   }
-      // });
     }
   });
 </script>

@@ -1,5 +1,4 @@
 <script type="text/html" data-template-name="midea-cloud">
-
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name">
@@ -17,13 +16,36 @@
 
   <div class="form-tips">
     <span id="method-usage">
-      Empty/timestamp payload get information from HVAC
+      Empty/timestamp payload get information from Device
     </span>
   </div>
 </script>
 
-<script type="text/html" data-help-name="midea-cloud">
-  <p>Control HVAC in Midea Cloud</p>
+<script type="text/x-red" data-help-name="midea-cloud">
+  <p>Send command to device in Midea Cloud</p>
+  <h3>Configuration</h3>
+  <dl class="message-properties">
+    <dt class="optional">Name<span class="property-type">string</span></dt>
+    <dd>Choose any name to identify your node</dd>
+    <dt class="required">Account<span class="property-type">object</span></dt>
+    <dd>Choose the Account to use</dd>
+    <dt class="required">Device<span class="property-type">object</span></dt>
+    <dd>Choose the device to send command</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <h5>Input</h5>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">object</span></dt>
+    <dd>empty/timestamp get information from Device</dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <h5>Output</h5>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">object</span></dt>
+    <dd>information from Device</dd>
+  </dl>
 </script>
 
 <script type="text/javascript">
