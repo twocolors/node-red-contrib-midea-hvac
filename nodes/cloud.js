@@ -67,6 +67,8 @@ module.exports = function (RED) {
     }
 
     node.on('input', function (msg) {
+      if (!node.midea) return;
+
       let applianceId = node.config.device.split(':')[1];
 
       node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
