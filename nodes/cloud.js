@@ -68,10 +68,9 @@ module.exports = function (RED) {
 
     node.on('input', function (msg) {
       if (!node.midea) return;
+      node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
 
       let applianceId = node.config.device.split(':')[1];
-
-      node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
 
       let f;
       if (!msg.payload || typeof (msg.payload) === 'number') {
