@@ -73,86 +73,52 @@ module.exports = function (RED) {
 
       node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
 
-      // js hall ...
+      let f;
       if (!msg.payload || typeof (msg.payload) === 'number') {
-        node.midea.updateValues(applianceId).then(response => {
-          msg.payload = node._successful(response);
-          node.send(msg);
-        }).catch((error) => {
-          let errorCode = error.message.split(':')[0];
-          if (errorCode === '3123' || errorCode === '3176') {
-            node.midea.getUserList().then(() => {
-              node.midea.updateValues(applianceId).then(response => {
-                msg.payload = node._successful(response);
-                node.send(msg);
-              }).catch(error => {
-                let errorCode = error.message.split(':')[0];
-                if (errorCode === '3123' || errorCode === '3176') {
-                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
-                } else {
-                  node._failed(error.message);
-                }
-              });
-            }).catch(error => {
-              node._failed(error.message);
-            });
-          } else {
-            node.midea.login().then(() => {
-              node.midea.updateValues(applianceId).then(response => {
-                msg.payload = node._successful(response);
-                node.send(msg);
-              }).catch(error => {
-                if (errorCode === '3123' || errorCode === '3176') {
-                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
-                } else {
-                  node._failed(error.message);
-                }
-              });
-            }).catch(error => {
-              node._failed(error.message);
-            });
-          }
-        });
+        f = node.midea.updateValues(applianceId);
       } else {
-        node.midea.sendToDevice(applianceId, msg.payload).then(response => {
-          msg.payload = node._successful(response);
-          node.send(msg);
-        }).catch((error) => {
-          let errorCode = error.message.split(':')[0];
-          if (errorCode === '3123' || errorCode === '3176') {
-            node.midea.getUserList().then(() => {
-              node.midea.sendToDevice(applianceId, msg.payload).then(response => {
-                msg.payload = node._successful(response);
-                node.send(msg);
-              }).catch(error => {
-                let errorCode = error.message.split(':')[0];
-                if (errorCode === '3123' || errorCode === '3176') {
-                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
-                } else {
-                  node._failed(error.message);
-                }
-              });
-            }).catch(error => {
-              node._failed(error.message);
-            });
-          } else {
-            node.midea.login().then(() => {
-              node.midea.sendToDevice(applianceId, msg.payload).then(response => {
-                msg.payload = node._successful(response);
-                node.send(msg);
-              }).catch(error => {
-                if (errorCode === '3123' || errorCode === '3176') {
-                  node._failed(`Command wrong or device (${applianceId}) not reachable`);
-                } else {
-                  node._failed(error.message);
-                }
-              });
-            }).catch(error => {
-              node._failed(error.message);
-            });
-          }
-        });
+        f = node.midea.sendToDevice(applianceId, msg.payload);
       }
+
+      // js hall ...
+      f().then(response => {
+        msg.payload = node._successful(response);
+        node.send(msg);
+      }).catch((error) => {
+        let errorCode = error.message.split(':')[0];
+        if (errorCode === '3123' || errorCode === '3176') {
+          node.midea.getUserList().then(() => {
+            f().then(response => {
+              msg.payload = node._successful(response);
+              node.send(msg);
+            }).catch(error => {
+              let errorCode = error.message.split(':')[0];
+              if (errorCode === '3123' || errorCode === '3176') {
+                node._failed(`Command wrong or device (${applianceId}) not reachable`);
+              } else {
+                node._failed(error.message);
+              }
+            });
+          }).catch(error => {
+            node._failed(error.message);
+          });
+        } else {
+          node.midea.login().then(() => {
+            f().then(response => {
+              msg.payload = node._successful(response);
+              node.send(msg);
+            }).catch(error => {
+              if (errorCode === '3123' || errorCode === '3176') {
+                node._failed(`Command wrong or device (${applianceId}) not reachable`);
+              } else {
+                node._failed(error.message);
+              }
+            });
+          }).catch(error => {
+            node._failed(error.message);
+          });
+        }
+      });
     });
 
   }
