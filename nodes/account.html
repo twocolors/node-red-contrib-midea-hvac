@@ -1,4 +1,4 @@
-<script type="text/html" data-template-name="midea-cloud-account">
+<script type="text/html" data-template-name="midea-account">
   <div class="form-row">
     <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-config-input-name" placeholder="Name">
@@ -15,7 +15,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="midea-cloud-account">
+<script type="text/x-red" data-help-name="midea-account">
   <p>Connection to Midea Cloud</p>
   <h3>Configuration</h3>
   <dl class="message-properties">
@@ -29,15 +29,17 @@
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('midea-cloud-account', {
+  RED.nodes.registerType('midea-account', {
     category: 'config',
     defaults: {
       name: { value: '' },
-      username: { value: '', required: true },
-      password: { value: '', required: true }
+      credentials: {
+        username: { type: 'text', value: '', required: true },
+        password: { type: 'password', value: '', required: true }
+      }
     },
     label: function () {
-      return (this.name || this.username || 'midea cloud account');
+      return (this.name || this.credentials.username || 'midea account');
     }
   });
 </script>

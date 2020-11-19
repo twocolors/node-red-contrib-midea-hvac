@@ -3,20 +3,25 @@
 const Midea = require('../lib/midea.js');
 
 module.exports = function (RED) {
-  class MideaCloudAccount {
+  class MideaAccount {
     constructor(config) {
       RED.nodes.createNode(this, config);
 
       let node = this;
       node.config = config;
 
-      if (config.username && config.password) {
+      if (node.credentials.username && node.credentials.password) {
         node.midea = new Midea(config.username, config.password);
       }
     }
   }
 
-  RED.nodes.registerType("midea-cloud-account", MideaCloudAccount);
+  RED.nodes.registerType("midea-account", MideaAccount, {
+    credentials: {
+      username: { type: "text" },
+      password: { type: "password" }
+    }
+  });
 
   RED.httpAdmin.get('/midea/cloud/login', (req, res) => {
     let controller = RED.nodes.getNode(req.query.controller);

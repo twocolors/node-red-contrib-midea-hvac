@@ -6,7 +6,7 @@
   "version": "1.0.6",
   "node-red" : {
       "nodes": {
-        "midea-cloud-account": "nodes/cloud-account.js",
+        "midea-account": "nodes/account.js",
         "midea-cloud": "nodes/cloud.js"
       }
   },
