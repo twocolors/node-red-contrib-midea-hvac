@@ -35,11 +35,11 @@
       name: { value: '' },
     },
     credentials: {
-      username: { type: 'text', value: '', required: true },
-      password: { type: 'password', value: '', required: true }
+      username: { type: 'text', required: true },
+      password: { type: 'password', required: true }
     },
     label: function () {
-      return (this.name || 'midea account');
+      return (this.name || this.credentials.username || 'midea account');
     }
   });
 </script>
