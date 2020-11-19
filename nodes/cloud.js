@@ -75,9 +75,9 @@ module.exports = function (RED) {
 
       let f;
       if (!msg.payload || typeof (msg.payload) === 'number') {
-        f = node.midea.updateValues(applianceId);
+        f = function (){ return node.midea.updateValues(applianceId); };
       } else {
-        f = node.midea.sendToDevice(applianceId, msg.payload);
+        f = function (){ return node.midea.sendToDevice(applianceId, msg.payload); };
       }
 
       // js hall ...
