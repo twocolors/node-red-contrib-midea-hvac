@@ -33,13 +33,13 @@
     category: 'config',
     defaults: {
       name: { value: '' },
-      credentials: {
-        username: { type: 'text', value: '', required: true },
-        password: { type: 'password', value: '', required: true }
-      }
+    },
+    credentials: {
+      username: { type: 'text', value: '', required: true },
+      password: { type: 'password', value: '', required: true }
     },
     label: function () {
-      return (this.name || this.credentials.username || 'midea account');
+      return (this.credentials.username || 'midea account');
     }
   });
 </script>
