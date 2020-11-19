@@ -3,7 +3,7 @@
   "license": "GPL",
   "name" : "node-red-contrib-midea",
   "description": "Midea nodes for node-red",
-  "version": "1.0.6",
+  "version": "1.0.7-dev-01",
   "node-red" : {
       "nodes": {
         "midea-account": "nodes/account.js",
