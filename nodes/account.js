@@ -11,7 +11,7 @@ module.exports = function (RED) {
       node.config = config;
 
       if (node.credentials.username && node.credentials.password) {
-        node.midea = new Midea(config.username, config.password);
+        node.midea = new Midea(node.credentials.username, node.credentials.password);
       }
     }
   }
