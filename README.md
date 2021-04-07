@@ -1,7 +1,7 @@
-# node-red-contrib-midea
+# node-red-contrib-midea-hvac
 Node-Red Nodes for HVAC Midea
 
-* midea-cloud: get/set value of device in Midea Cloud
+* cloud: get/set value of device in Midea Cloud
 
 ### Values for Node
 - audibleFeedback   - ???
@@ -21,5 +21,5 @@ This plugin based on code
 [homebridge-midea](https://github.com/ttimpe/homebridge-midea/)
 
 
-<img src="https://github.com/twocolors/node-red-contrib-midea/blob/master/readme/1.png?raw=true">
-<img src="https://github.com/twocolors/node-red-contrib-midea/blob/master/readme/2.png?raw=true">
+<img src="https://github.com/twocolors/node-red-contrib-midea-hvac/blob/master/readme/1.png?raw=true">
+<img src="https://github.com/twocolors/node-red-contrib-midea-hvac/blob/master/readme/2.png?raw=true">

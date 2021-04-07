@@ -1,4 +1,4 @@
-<script type="text/html" data-template-name="midea-cloud">
+<script type="text/html" data-template-name="cloud">
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name">
@@ -21,7 +21,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="midea-cloud">
+<script type="text/x-red" data-help-name="cloud">
   <p>Send command to device in Midea Cloud</p>
   <h3>Configuration</h3>
   <dl class="message-properties">
@@ -49,12 +49,12 @@
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('midea-cloud', {
-    category: 'devices',
+  RED.nodes.registerType('cloud', {
+    category: 'Midea HVAC',
     color: '#D8BFD8',
     defaults: {
       name: { value: '', required: false },
-      account: { type: 'midea-account', required: true },
+      account: { type: 'account', required: true },
       device: { value: '', required: false },
     },
     inputs: 1,
@@ -62,7 +62,7 @@
     icon: "white-globe.png",
     align: 'left',
     label: function () {
-      return (this.name || 'midea cloud');
+      return (this.name || 'cloud');
     },
     oneditprepare: function () {
       let node = this;

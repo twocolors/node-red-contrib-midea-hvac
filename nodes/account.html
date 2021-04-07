@@ -1,4 +1,4 @@
-<script type="text/html" data-template-name="midea-account">
+<script type="text/html" data-template-name="account">
   <div class="form-row">
     <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-config-input-name" placeholder="Name">
@@ -15,7 +15,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="midea-account">
+<script type="text/x-red" data-help-name="account">
   <p>Connection to Midea Cloud</p>
   <h3>Configuration</h3>
   <dl class="message-properties">
@@ -29,7 +29,7 @@
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('midea-account', {
+  RED.nodes.registerType('account', {
     category: 'config',
     defaults: {
       name: { value: '' },

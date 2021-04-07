@@ -121,5 +121,5 @@ module.exports = function (RED) {
     });
 
   }
-  RED.nodes.registerType("midea-cloud", MideaCloud);
+  RED.nodes.registerType("cloud", MideaCloud);
 }

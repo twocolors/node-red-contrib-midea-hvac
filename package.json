@@ -1,13 +1,13 @@
 {
   "author": "D",
   "license": "GPL",
-  "name" : "node-red-contrib-midea",
+  "name" : "node-red-contrib-midea-hvac",
   "description": "Midea nodes for node-red",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "node-red" : {
       "nodes": {
-        "midea-account": "nodes/account.js",
-        "midea-cloud": "nodes/cloud.js"
+        "account": "nodes/account.js",
+        "cloud": "nodes/cloud.js"
       }
   },
   "dependencies": {
@@ -16,12 +16,12 @@
     "traverse": "^0.6.6"
   },
   "bugs": {
-    "url": "https://github.com/twocolors/node-red-contrib-midea/issues"
+    "url": "https://github.com/twocolors/node-red-contrib-midea-hvac/issues"
   },
-  "homepage": "https://github.com/twocolors/node-red-contrib-midea",
+  "homepage": "https://github.com/twocolors/node-red-contrib-midea-hvac",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/twocolors/node-red-contrib-midea.git"
+    "url": "git+https://github.com/twocolors/node-red-contrib-midea-hvac.git"
   },
   "keywords": [
     "node-red",
