@@ -10,16 +10,8 @@ module.exports = function (RED) {
     node.cloud   = node.account.cloud;
 
     node._successful = function (res) {
-      if (!node.cloud) {
-        node.error('The Account in Midea Clous is not configured, please check your settings');
-        node.status({ fill: 'red', shape: 'dot', text: 'Failed' });
-        setTimeout(() => node.status({}), 3000);
-        return;
-      }
-
       node.status({ fill: 'green', shape: 'dot', text: 'Successful' });
       setTimeout(() => node.status({}), 3000);
-
       return res;
     }
 
@@ -30,7 +22,10 @@ module.exports = function (RED) {
     }
 
     node.on('input', function (msg) {
-      if (!node.cloud) return;
+      if (!node.cloud || !node.config.device) {
+        return node._failed('The Account in Midea Clous is not configured, please check your settings');
+      }
+
       node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
 
       let retryCommand = node.config.retryCommand;
@@ -41,7 +36,7 @@ module.exports = function (RED) {
 
       if (!node.cloud._connection._accessToken) {
         node.cloud.initialize().catch(error => {
-          return node._failed(`Error: Failed to initialize (${error.message})`);
+          return node._failed(`Failed to initialize (${error.message})`);
         });
       }
 
@@ -61,11 +56,6 @@ module.exports = function (RED) {
         });
       }
     });
-
-    // node.cloud.on('status-update', data => {
-    //   console.log(data);
-    // });
-
   }
   RED.nodes.registerType("cloud", MideaCloud);
 }

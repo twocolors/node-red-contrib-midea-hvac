@@ -3,11 +3,12 @@
   "license": "GPL",
   "name": "node-red-contrib-midea-hvac",
   "description": "Midea HVAC nodes for node-red",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "node-red": {
     "nodes": {
       "midea-account": "nodes/account.js",
-      "cloud": "nodes/cloud.js"
+      "cloud": "nodes/cloud.js",
+      "serialbridge": "nodes/serialbridge.js"
     }
   },
   "dependencies": {

@@ -2,6 +2,7 @@
 Node-Red Nodes for HVAC Midea
 
 * cloud: get/set value of device in Midea Cloud
+* serialbridge: get/set value of device use Serial bridge (see [ADAPTER.md](https://github.com/reneklootwijk/node-mideahvac/blob/master/ADAPTER.md))
 
 ### Properties can be use
  Property | Type | Possible values | Description |
