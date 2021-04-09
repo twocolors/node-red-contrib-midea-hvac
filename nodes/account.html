@@ -1,4 +1,4 @@
-<script type="text/html" data-template-name="account">
+<script type="text/html" data-template-name="midea-account">
   <div class="form-row">
     <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-config-input-name" placeholder="Name">
@@ -15,31 +15,31 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="account">
+<script type="text/html" data-help-name="midea-account">
   <p>Connection to Midea Cloud</p>
   <h3>Configuration</h3>
   <dl class="message-properties">
     <dt class="optional">Name<span class="property-type">string</span></dt>
     <dd>Choose any name to identify your node</dd>
-    <dt class="required">Midea Username<span class="property-type">string</span></dt>
+    <dt class="required">Midea Cloud Username<span class="property-type">string</span></dt>
     <dd></dd>
-    <dt class="required">Midea Password<span class="property-type">string</span></dt>
+    <dt class="required">Midea Cloud Password<span class="property-type">string</span></dt>
     <dd></dd>
   </dl>
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('account', {
+  RED.nodes.registerType('midea-account', {
     category: 'config',
     defaults: {
       name: { value: '' },
     },
     credentials: {
-      username: { type: 'text', required: true },
+      username: { type: 'text',     required: true },
       password: { type: 'password', required: true }
     },
     label: function () {
-      return (this.name || this.credentials.username || 'midea account');
+      return (this.name || 'Midea Cloud Account');
     }
   });
 </script>

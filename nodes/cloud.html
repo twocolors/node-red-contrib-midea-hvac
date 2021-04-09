@@ -11,7 +11,17 @@
 
   <div class="form-row">
     <label for="node-input-device"><i class="fa fa-tasks"></i> Device</label>
-    <input type="text" id="node-input-device">
+    <input type="text" id="node-input-device" disabled="disabled">
+  </div>
+
+  <!-- <div class="form-row">
+    <label for="force-refresh"><i class="fa fa-refresh"></i> Refresh</label>
+    <a class="red-ui-button" id="force-refresh" name="force-refresh" style="width:70% !important;">Refresh Devices List</a>
+  </div> -->
+
+  <div class="form-row">
+    <label for='node-input-retryCommand'><i class='fa fa-share-square'></i> Retry</label>
+    <input type="checkbox" id="node-input-retryCommand" checked="checked" style="display: inline-block; width: auto; vertical-align: top;"> Retry request if Media Cloud not response or error</input>
   </div>
 
   <div class="form-tips">
@@ -21,7 +31,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="cloud">
+<script type="text/html" data-help-name="cloud">
   <p>Send command to device in Midea Cloud</p>
   <h3>Configuration</h3>
   <dl class="message-properties">
@@ -31,6 +41,8 @@
     <dd>Choose the Account to use</dd>
     <dt class="required">Device<span class="property-type">object</span></dt>
     <dd>Choose the device to send command</dd>
+    <dt class="required">Retry<span class="property-type">checkbox</span></dt>
+    <dd>Retry request if Media Cloud not response or error</dd>
   </dl>
 
   <h3>Inputs</h3>
@@ -54,8 +66,9 @@
     color: '#D8BFD8',
     defaults: {
       name: { value: '', required: false },
-      account: { type: 'account', required: true },
-      device: { value: '', required: false },
+      account: { type: 'midea-account', required: true },
+      device: { value: '', required: true },
+      retryCommand: { value: true, required: true },
     },
     inputs: 1,
     outputs: 1,
@@ -65,7 +78,8 @@
       return (this.name || 'cloud');
     },
     oneditprepare: function () {
-      let node = this;
+      let node    = this;
+      let _device = false;
 
       $('#node-input-account').on('change', function () {
         var value = $('#node-input-device').val();
@@ -75,29 +89,34 @@
         $('#node-input-device').replaceWith('<input type="text" id="node-input-device">');
         $('#node-input-device').val(value);
 
-        if (account && account.id) {
-          $.getJSON('midea/cloud/devices', {
-            controller: account.id,
-          }).done(function (data, textStatus, jqXHR) {
-            if (!data.error) {
-              if (data.length === 0) {
-                RED.notify('No devices retrieved, check your HVAC connection settings', 'error');
-                return;
+        setTimeout(function(){
+          if (_device) return;
+          _device = true;
+          if (account && account.id) {
+            $.getJSON('midea/cloud/devices', {
+              controller: account.id,
+            }).done(function (data, textStatus, jqXHR) {
+              if (!data.error) {
+                if (data.length === 0) {
+                  RED.notify('No devices retrieved, check your HVAC connection settings', 'error');
+                  return;
+                }
+
+                $('#node-input-device').replaceWith('<select id="node-input-device" style="width: 70%;"></select>');
+                $('#node-input-device').append('<option value=""></option>');
+
+                data.forEach(function (device) {
+                  $('#node-input-device').append('<option value="' + device.name + ':' + device.id + '" data-name="' + device.name + '" data-id="' + device.id + '">' + device.name + ':' + device.id + '</option>');
+                });
+
+                $('#node-input-device').val(value);
+              } else {
+                RED.notify(data.error, 'error');
               }
+            });
+          }
+        }, 150);
 
-              $('#node-input-device').replaceWith('<select id="node-input-device" style="width: 70%;"></select>');
-              $('#node-input-device').append('<option value=""></option>');
-
-              data.forEach(function (device) {
-                $('#node-input-device').append('<option value="' + device.name + ':' + device.id + '" data-name="' + device.name + '" data-id="' + device.id + '">' + device.name + ':' + device.id + '</option>');
-              });
-
-              $('#node-input-device').val(value);
-            } else {
-              RED.notify(data.error, 'error');
-            }
-          });
-        }
       });
     }
   });

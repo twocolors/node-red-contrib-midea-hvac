@@ -4,13 +4,13 @@ module.exports = function (RED) {
   function MideaCloud(config) {
     RED.nodes.createNode(this, config);
 
-    const node = this;
-    node.config = config;
+    const node   = this;
+    node.config  = config;
     node.account = RED.nodes.getNode(config.account);
-    node.midea = node.account.midea;
+    node.cloud   = node.account.cloud;
 
     node._successful = function (res) {
-      if (!node.midea) {
+      if (!node.cloud) {
         node.error('The Account in Midea Clous is not configured, please check your settings');
         node.status({ fill: 'red', shape: 'dot', text: 'Failed' });
         setTimeout(() => node.status({}), 3000);
@@ -20,105 +20,51 @@ module.exports = function (RED) {
       node.status({ fill: 'green', shape: 'dot', text: 'Successful' });
       setTimeout(() => node.status({}), 3000);
 
-      return {
-        loginId: node.midea.loginId,
-        sessionId: node.midea.sessionId,
-        accessToken: node.midea.accessToken,
-        userId: node.midea.userId,
-        dataKey: node.midea.dataKey,
-        powerState: res.powerState,
-        imodeResume: res.imodeResume,
-        timerMode: res.timerMode,
-        applianceError: res.applianceError,
-        targetTemperature: res.targetTemperature,
-        operationalMode: res.operationalMode,
-        fanSpeed: res.fanSpeed,
-        onTimer: res.onTimer,
-        offTimer: res.offTimer,
-        swingMode: res.swingMode,
-        cozySleep: res.cozySleep,
-        save: res.save,
-        lowFrequencyFan: res.lowFrequencyFan,
-        superFan: res.superFan,
-        feelOwn: res.feelOwn,
-        childSleepMode: res.childSleepMode,
-        exchangeAir: res.exchangeAir,
-        dryClean: res.dryClean,
-        auxHeat: res.auxHeat,
-        ecoMode: res.ecoMode,
-        cleanUp: res.cleanUp,
-        tempUnit: res.tempUnit,
-        sleepFunction: res.sleepFunction,
-        turboMode: res.turboMode,
-        catchCold: res.catchCold,
-        nightLight: res.nightLight,
-        peakElec: res.peakElec,
-        naturalFan: res.naturalFan,
-        indoorTemperature: res.indoorTemperature,
-        outdoorTemperature: res.outdoorTemperature,
-        humidity: res.humidity,
-      };
+      return res;
     }
 
     node._failed = function (error) {
-      node.error(`Midea: ${error}`);
+      node.error(`${error}`);
       node.status({ fill: 'red', shape: 'dot', text: error });
       setTimeout(() => node.status({}), 3000);
     }
 
     node.on('input', function (msg) {
-      if (!node.midea) return;
+      if (!node.cloud) return;
       node.status({ fill: 'blue', shape: 'dot', text: 'Invoking ...' });
 
-      let applianceId = node.config.device.split(':')[1];
+      let retryCommand = node.config.retryCommand;
+      let _deviceId    = node.config.device.split(':')[1];
 
-      let f;
-      if (!msg.payload || typeof (msg.payload) === 'number') {
-        f = function (){ return node.midea.updateValues(applianceId); };
-      } else {
-        f = function (){ return node.midea.sendToDevice(applianceId, msg.payload); };
+      node.cloud._deviceId = _deviceId;
+      // node.cloud._connection._deviceId = _deviceId;
+
+      if (!node.cloud._connection._accessToken) {
+        node.cloud.initialize().catch(error => {
+          return node._failed(`Error: Failed to initialize (${error.message})`);
+        });
       }
 
-      // js hall ...
-      f().then(response => {
-        msg.payload = node._successful(response);
-        node.send(msg);
-      }).catch((error) => {
-        let errorCode = error.message.split(':')[0];
-        if (errorCode === '3123' || errorCode === '3176') {
-          node.midea.getUserList().then(() => {
-            f().then(response => {
-              msg.payload = node._successful(response);
-              node.send(msg);
-            }).catch(error => {
-              let errorCode = error.message.split(':')[0];
-              if (errorCode === '3123' || errorCode === '3176') {
-                node._failed(`Command wrong or device (${applianceId}) not reachable`);
-              } else {
-                node._failed(error.message);
-              }
-            });
-          }).catch(error => {
-            node._failed(error.message);
-          });
-        } else {
-          node.midea.login().then(() => {
-            f().then(response => {
-              msg.payload = node._successful(response);
-              node.send(msg);
-            }).catch(error => {
-              if (errorCode === '3123' || errorCode === '3176') {
-                node._failed(`Command wrong or device (${applianceId}) not reachable`);
-              } else {
-                node._failed(error.message);
-              }
-            });
-          }).catch(error => {
-            node._failed(error.message);
-          });
-        }
-      });
+      if (!msg.payload || typeof (msg.payload) === 'number') {
+        node.cloud.getStatus(retryCommand, false).then(response => {
+          msg.payload = node._successful(response);
+          return node.send(msg);
+        }).catch(error => {
+          return node._failed(`Error getting status (${error.message})`);
+        });
+      } else {
+        node.cloud.setStatus(msg.payload, retryCommand, false).then(response => {
+          msg.payload = node._successful(response);
+          return node.send(msg);
+        }).catch(error => {
+          return node._failed(`Error set status (${error.message})`);
+        });
+      }
     });
+
+    // node.cloud.on('status-update', data => {
+    //   console.log(data);
+    // });
 
   }
   RED.nodes.registerType("cloud", MideaCloud);

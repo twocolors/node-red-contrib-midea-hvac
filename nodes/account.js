@@ -1,6 +1,6 @@
 'use strict';
 
-const Midea = require('../lib/midea.js');
+const MideaCloud = require('../lib/midea-cloud');
 
 module.exports = function (RED) {
   class MideaAccount {
@@ -11,46 +11,25 @@ module.exports = function (RED) {
       node.config = config;
 
       if (node.credentials.username && node.credentials.password) {
-        node.midea = new Midea(node.credentials.username, node.credentials.password);
+        node.cloud = new MideaCloud({uid: node.credentials.username, password: node.credentials.password});
       }
     }
   }
 
-  RED.nodes.registerType("account", MideaAccount, {
+  RED.nodes.registerType("midea-account", MideaAccount, {
     credentials: {
       username: { type: "text" },
       password: { type: "password" }
     }
   });
 
-  RED.httpAdmin.get('/midea/cloud/login', (req, res) => {
-    let controller = RED.nodes.getNode(req.query.controller);
-    if (controller) {
-      controller.midea.login().then(response => {
-        res.json(response);
-      }).catch(error => {
-        res.json({ error: error.message });
-      });
-    } else {
-      res.status(404).end();
-    }
-  });
-
   RED.httpAdmin.get('/midea/cloud/devices', (req, res) => {
     let controller = RED.nodes.getNode(req.query.controller);
     if (controller) {
-      controller.midea.getUserList().then(response => {
+      controller.cloud.devices().then(response => {
         res.json(response);
-      }).catch(() => {
-        controller.midea.login().then(() => {
-          controller.midea.getUserList().then(response => {
-            res.json(response);
-          }).catch(error => {
-            res.json({ error: error.message });
-          });
-        }).catch(error => {
-          res.json({ error: error.message });
-        });
+      }).catch(error => {
+        res.json({ error: error.message });
       });
     } else {
       res.status(404).end();

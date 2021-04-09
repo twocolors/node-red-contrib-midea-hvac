@@ -1,19 +1,17 @@
 {
   "author": "D",
   "license": "GPL",
-  "name" : "node-red-contrib-midea-hvac",
-  "description": "Midea nodes for node-red",
-  "version": "1.0.8",
-  "node-red" : {
-      "nodes": {
-        "account": "nodes/account.js",
-        "cloud": "nodes/cloud.js"
-      }
+  "name": "node-red-contrib-midea-hvac",
+  "description": "Midea HVAC nodes for node-red",
+  "version": "1.0.9",
+  "node-red": {
+    "nodes": {
+      "midea-account": "nodes/account.js",
+      "cloud": "nodes/cloud.js"
+    }
   },
   "dependencies": {
-    "crypto": "^1.0.1",
-    "request": "^2.88.2",
-    "traverse": "^0.6.6"
+    "node-mideahvac": "^0.1.19"
   },
   "bugs": {
     "url": "https://github.com/twocolors/node-red-contrib-midea-hvac/issues"
