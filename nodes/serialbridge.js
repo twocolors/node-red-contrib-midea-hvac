@@ -28,7 +28,7 @@ module.exports = function(RED) {
           // Send the network notification message each 2 minutes (use unref to prevent this is keeping the process alive and stalls the unit test)
           setInterval(self => {
             try {
-              self.sendNetworkStatusNotification();
+              self.sendNetworkStatusNotification().catch(_ => {});
             } catch {};
           }, 120000, self).unref();
 
