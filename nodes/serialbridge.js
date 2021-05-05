@@ -3,34 +3,48 @@
 const Serial = require('node-mideahvac/lib/serialbridge');
 const isPortReachable = require('../lib/reachable');
 
-module.exports = function(RED) {
+module.exports = function (RED) {
   function SerialBridge(config) {
-    RED.nodes.createNode(this,config);
+    RED.nodes.createNode(this, config);
 
     const node = this;
 
     if (config.host && config.port) {
-      node.serial = new Serial({host: config.host, port: config.port});
+      node.serial = new Serial({ host: config.host, port: config.port });
 
-      node.serial.initialize = async function() {
-        var self = this;
+      node.serial.initialize = async function () {
+        let self = this;
 
         return new Promise(async (resolve, reject) => {
           if (!self._connected) {
             try {
-              await isPortReachable(self.port, {host: self.host});
+              await isPortReachable(self.port, { host: self.host });
               await self._connect();
             } catch (error) {
               reject(new Error(`${error.message}`));
             }
           }
 
-          // Send the network notification message each 2 minutes (use unref to prevent this is keeping the process alive and stalls the unit test)
-          setInterval(self => {
-            try {
-              self.sendNetworkStatusNotification().catch(_ => {});
-            } catch {};
-          }, 120000, self).unref();
+          if (self._connected) {
+            self._connection.on('close', function () {
+              // Reset connection flag
+              self._connected = false
+            })
+
+            self._connection.on('error', function () {
+              // Reset connection flag
+              self._connected = false;
+            });
+
+            if (config.notify) {
+              // Send the network notification message each 2 minutes (use unref to prevent this is keeping the process alive and stalls the unit test)
+              setInterval(self => {
+                try {
+                  self.sendNetworkStatusNotification().catch(_ => { });
+                } catch { };
+              }, 120000, self).unref();
+            }
+          }
 
           resolve();
         });
@@ -49,7 +63,7 @@ module.exports = function(RED) {
       setTimeout(() => node.status({}), 3000);
     }
 
-    node.on('input', function(msg) {
+    node.on('input', function (msg) {
       if (!node.serial) {
         return node._failed('Serial bridge is not configured, please check your settings');
       }
@@ -78,6 +92,13 @@ module.exports = function(RED) {
         });
       }
     });
+
+    node.on('close', function () {
+      let serial = node.serial;
+      if (serial._connected) {
+        serial._connection.destroy();
+      }
+    });
   }
-  RED.nodes.registerType("serialbridge",SerialBridge);
+  RED.nodes.registerType("serialbridge", SerialBridge);
 }

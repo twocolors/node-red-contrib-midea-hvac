@@ -10,6 +10,7 @@
       name: { value: '' },
       host: { value: '', required: true },
       port: { value: 23, required: true, validate: RED.validators.number() },
+      notify: { value: false }
     },
     label: function () {
       return (this.name || this.host ||'serialbridge');
@@ -32,6 +33,11 @@
     <label for="node-input-port"><i class="fa fa-sign-in"></i> Port</label>
     <input type="text" id="node-input-port" placeholder="Port">
   </div>
+
+  <div class="form-row">
+    <label for="node-input-notify"><i class='fa fa-refresh'></i> Notify</label>
+    <input type="checkbox" id="node-input-notify" style="display: inline-block; width: auto; vertical-align: top;"> Send notify to have the WiFi in the display</input>
+</div>
 
   <div class="form-tips">
     <span id="method-usage">
