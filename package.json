@@ -2,7 +2,7 @@
   "author": "D",
   "license": "GPL",
   "name": "node-red-contrib-midea-hvac",
-  "description": "Midea HVAC nodes for node-red",
+  "description": "Nodes for controlling Midea HVAC in Node-RED",
   "version": "1.1.4",
   "node-red": {
     "nodes": {
