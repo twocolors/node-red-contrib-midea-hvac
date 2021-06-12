@@ -1,5 +1,5 @@
 # node-red-contrib-midea-hvac
-Node-Red Nodes for HVAC Midea
+Nodes for controlling Midea HVAC in Node-RED
 
 * cloud: get/set value of device in Midea Cloud
 * serialbridge: get/set value of device use Serial bridge (see [ADAPTER.md](https://github.com/reneklootwijk/node-mideahvac/blob/master/ADAPTER.md))
