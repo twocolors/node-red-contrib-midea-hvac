@@ -8,6 +8,7 @@ module.exports = function (RED) {
     node.config  = config;
     node.account = RED.nodes.getNode(config.account);
     node.cloud   = node.account.cloud;
+    node.rotting = 0;
 
     node._successful = function (res) {
       node.status({ fill: 'green', shape: 'dot', text: 'Successful' });
@@ -16,6 +17,9 @@ module.exports = function (RED) {
     }
 
     node._failed = function (error) {
+      if (error.toString().match(/an internal error occurred/i)) {
+        node.rotting++;
+      }
       node.error(`${error}`);
       node.status({ fill: 'red', shape: 'dot', text: error });
       setTimeout(() => node.status({}), 3000);
@@ -34,8 +38,12 @@ module.exports = function (RED) {
       node.cloud._deviceId = _deviceId;
       // node.cloud._connection._deviceId = _deviceId;
 
-      if (!node.cloud._connection._accessToken) {
-        node.cloud.initialize().catch(error => {
+      if (node.rotting >= 5 || !node.cloud._connection._accessToken) {
+        node.cloud.initialize()
+        .then(() => {
+          node.rotting = 0;
+        })
+        .catch(error => {
           return node._failed(`Failed to initialize (${error.message})`);
         });
       }
