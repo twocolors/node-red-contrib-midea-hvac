@@ -1,0 +1,137 @@
+[
+  {
+      "id": "7520364acd504760",
+      "type": "tab",
+      "label": "Flow 2",
+      "disabled": false,
+      "info": "",
+      "env": []
+  },
+  {
+      "id": "97c9e7b5d3aba710",
+      "type": "cloud",
+      "z": "7520364acd504760",
+      "name": "",
+      "account": "6658952b38e3108b",
+      "device": "test",
+      "retryCommand": true,
+      "x": 330,
+      "y": 180,
+      "wires": [
+          [
+              "0f18c13ddf6bb0f5"
+          ]
+      ]
+  },
+  {
+      "id": "f33c75adcf1ec00b",
+      "type": "serialbridge",
+      "z": "7520364acd504760",
+      "name": "",
+      "host": "192.168.0.17",
+      "port": 23,
+      "notify": true,
+      "x": 350,
+      "y": 260,
+      "wires": [
+          [
+              "013e95d9891c6961"
+          ]
+      ]
+  },
+  {
+      "id": "e7e5f2523f285a2e",
+      "type": "inject",
+      "z": "7520364acd504760",
+      "name": "",
+      "props": [
+          {
+              "p": "payload"
+          },
+          {
+              "p": "topic",
+              "vt": "str"
+          }
+      ],
+      "repeat": "",
+      "crontab": "",
+      "once": false,
+      "onceDelay": 0.1,
+      "topic": "",
+      "payload": "",
+      "payloadType": "date",
+      "x": 180,
+      "y": 180,
+      "wires": [
+          [
+              "97c9e7b5d3aba710"
+          ]
+      ]
+  },
+  {
+      "id": "0f18c13ddf6bb0f5",
+      "type": "debug",
+      "z": "7520364acd504760",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "false",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 490,
+      "y": 180,
+      "wires": []
+  },
+  {
+      "id": "013e95d9891c6961",
+      "type": "debug",
+      "z": "7520364acd504760",
+      "name": "",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "false",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 530,
+      "y": 260,
+      "wires": []
+  },
+  {
+      "id": "476a806cc95e630f",
+      "type": "inject",
+      "z": "7520364acd504760",
+      "name": "",
+      "props": [
+          {
+              "p": "payload"
+          },
+          {
+              "p": "topic",
+              "vt": "str"
+          }
+      ],
+      "repeat": "",
+      "crontab": "",
+      "once": false,
+      "onceDelay": 0.1,
+      "topic": "",
+      "payload": "{\"powerOn\":true}",
+      "payloadType": "json",
+      "x": 160,
+      "y": 260,
+      "wires": [
+          [
+              "f33c75adcf1ec00b"
+          ]
+      ]
+  },
+  {
+      "id": "6658952b38e3108b",
+      "type": "midea-account",
+      "name": ""
+  }
+]
