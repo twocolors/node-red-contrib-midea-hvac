@@ -27,17 +27,17 @@ module.exports = function (RED) {
 
           if (self._connected) {
             self._connection.on("close", function () {
-              // Reset connection flag
-              self._connected = false;
               // Destroy connection
               self._connection.destroy();
+              // Reset connection flag
+              self._connected = false;
             });
 
             self._connection.on("error", function () {
-              // Reset connection flag
-              self._connected = false;
               // Destroy connection
               self._connection.destroy();
+              // Reset connection flag
+              self._connected = false;
             });
 
             if (config.notify) {
