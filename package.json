@@ -5,15 +5,15 @@
   "description": "Nodes for controlling Midea HVAC in Node-RED",
   "version": "1.1.9",
   "node-red": {
-    "version": ">=1.0.0",
+    "version": ">=2.2.0",
     "nodes": {
-      "midea-account": "nodes/account.js",
+      "midea-hvac-config": "nodes/config.js",
       "cloud": "nodes/cloud.js",
       "serialbridge": "nodes/serialbridge.js"
     }
   },
   "dependencies": {
-    "node-mideahvac": "latest"
+    "node-mideahvac": "^0.2.1"
   },
   "bugs": {
     "url": "https://github.com/twocolors/node-red-contrib-midea-hvac/issues"
@@ -30,6 +30,6 @@
     "hvac"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   }
 }

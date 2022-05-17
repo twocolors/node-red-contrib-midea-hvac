@@ -16,7 +16,7 @@ module.exports = function (RED) {
     }
   }
 
-  RED.nodes.registerType("midea-account", MideaAccount, {
+  RED.nodes.registerType("midea-hvac-config", MideaAccount, {
     credentials: {
       username: { type: "text" },
       password: { type: "password" }
