@@ -42,7 +42,7 @@
 
     <hr align="middle">
     <div class="form-row">
-      <label style="width:100%;"><span>Midea Cloud for discovery</span></label>
+      <label style="width:100%;"><span>Cloud Midea (MSmartHome App)</span></label>
     </div>
 
     <div class="form-row">
@@ -69,6 +69,8 @@
       <label for="node-config-input-token"><i class="fa fa-tasks"></i> Token</label>
       <input type="text" id="node-config-input-token" placeholder="Token" disabled>
     </div>
+
+    <div class="form-tips"><b>Important:</b> deploy config node after discover</div>
   </div>
 </script>
 
@@ -98,7 +100,7 @@
     },
     credentials: {
       username: { type: 'text', required: true },
-      password: { type: 'text', required: true },
+      password: { type: 'password', required: true },
       id: { type: 'text', required: true },
       key: { type: 'text', required: true },
       token: { type: 'text', required: true },
@@ -116,17 +118,69 @@
         let $val = $("#node-config-input-chost").val();
         $("#node-config-input-discover").html(`<i class="fa fa-search"></i>`);
         $("#node-config-input-chost").off("change");
-        $("#node-config-input-chost").replaceWith(`<input type="text" id="node-config-input-host" style="width: 100%;">`);
+        $("#node-config-input-chost").replaceWith(`<input type="text" id="node-config-input-chost" style="width: 100%;">`);
         $("#node-config-input-chost").val($val);
       }
 
       function toggleInput() {
         let $val = $("#node-config-input-chost").val();
+        let $username = $("#node-config-input-username").val();
+        let $password = $("#node-config-input-password").val();
+
+        if (!$username || !$password) {
+          RED.notify(`Empty Username or Password for Cloud Midea (MSmartHome App)`, "error");
+          return;
+        }
+
+        RED.notify(`Discover Midea HVAC devices ... (10 sec)`);
 
         $("#node-config-input-chost").prop("disabled", true);
+        $.getJSON("midea-hvac/discover", {
+          username: $username,
+          password: $password,
+        }).done(function (devices) {
+          if (devices.length === 0) {
+            RED.notify(`No Midea HVAC devices found`, "error");
+            $("#node-config-input-chost").prop("disabled", false);
+            return;
+          }
+
+          if (typeof devices.error !== "undefined") {
+            RED.notify(devices.error, "error");
+            $("#node-config-input-chost").prop("disabled", false);
+            return;
+          }
+
+          $("#node-config-input-discover").html(`<i class="fa fa-i-cursor"></i>`);
+          $("#node-config-input-chost").replaceWith(`<select id="node-config-input-chost" style="width: 100%;"></select>`);
+          devices.forEach(function (device) {
+            $("#node-config-input-chost").append(`<option value="${device.chost}" data-chost="${device.chost}" data-cport="${device.cport}" data-id="${device.id}" data-key="${device.key}" data-token="${device.token}">${device.chost} (${device.id})</option>`);
+          });
+
+          $("#node-config-input-chost").on("change", changeChost);
+          if (devices.length === 1) {
+            $val = devices[0].chost;
+          }
+
+          $("#node-config-input-chost").val($val);
+          $("#node-config-input-chost").prop("disabled", false);
+
+          if (devices.length === 1) {
+            changeChost();
+          }
+        });
       }
 
-      $("#node-config-input-discover").click(function() {
+      function changeChost() {
+        let $chost = $("#node-config-input-chost option:selected");
+
+        $("#node-config-input-cport").val($chost.data("cport"));
+        $("#node-config-input-id").val($chost.data("id"));
+        $("#node-config-input-key").val($chost.data("key"));
+        $("#node-config-input-token").val($chost.data("token"));
+      }
+
+      $("#node-config-input-discover").click(function () {
         if ($("#node-config-input-chost").prop("tagName") === "INPUT") {
           toggleInput();
         } else {
