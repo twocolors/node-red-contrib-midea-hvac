@@ -35,10 +35,10 @@ module.exports = function (RED) {
   RED.httpAdmin.get("/midea-hvac/discover", async (req, res) => {
     let username = req.query.username;
     let password = req.query.password;
-    let devices  = [];
+    let devices = [];
 
     try {
-      devices  = await discover(username, password);
+      devices = await discover(username, password);
     } catch (error) {
       return res.json({ error: error });
     }
