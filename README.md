@@ -1,3 +1,6 @@
+# This nodes is rewrite to sopport sk103 and serialbridge, pleaz wait ...
+
+
 # node-red-contrib-midea-hvac
 Nodes for controlling Midea HVAC in Node-RED
 
