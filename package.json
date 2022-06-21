@@ -3,17 +3,16 @@
   "license": "GPL",
   "name": "node-red-contrib-midea-hvac",
   "description": "Nodes for controlling Midea HVAC in Node-RED",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "node-red": {
     "version": ">=2.2.0",
     "nodes": {
       "midea-hvac-config": "nodes/config.js",
-      "cloud": "nodes/cloud.js",
-      "serialbridge": "nodes/serialbridge.js"
+      "midea-hvac": "nodes/hvac.js"
     }
   },
   "dependencies": {
-    "node-mideahvac": "^0.2.1"
+    "node-mideahvac": "0.2.3"
   },
   "bugs": {
     "url": "https://github.com/twocolors/node-red-contrib-midea-hvac/issues"

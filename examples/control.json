@@ -1,0 +1,170 @@
+[
+    {
+        "id": "6b1cc4c8506393e8",
+        "type": "debug",
+        "z": "3724184acb9f7b51",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "4631f09092497abc",
+        "type": "midea-hvac",
+        "z": "3724184acb9f7b51",
+        "name": "",
+        "device": "2c14b551ab9b107f",
+        "retry": true,
+        "x": 430,
+        "y": 240,
+        "wires": [
+            [
+                "6b1cc4c8506393e8"
+            ]
+        ]
+    },
+    {
+        "id": "e1df8cdb6fac0db6",
+        "type": "inject",
+        "z": "3724184acb9f7b51",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "getCapabilities",
+        "payloadType": "str",
+        "x": 220,
+        "y": 240,
+        "wires": [
+            [
+                "4631f09092497abc"
+            ]
+        ]
+    },
+    {
+        "id": "fc7c45d88427c871",
+        "type": "inject",
+        "z": "3724184acb9f7b51",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "getPowerUsage",
+        "payloadType": "str",
+        "x": 220,
+        "y": 320,
+        "wires": [
+            [
+                "4631f09092497abc"
+            ]
+        ]
+    },
+    {
+        "id": "a988e9e67a9f81e9",
+        "type": "inject",
+        "z": "3724184acb9f7b51",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "getStatus",
+        "payloadType": "str",
+        "x": 240,
+        "y": 400,
+        "wires": [
+            [
+                "4631f09092497abc"
+            ]
+        ]
+    },
+    {
+        "id": "d3fd75ce1b319111",
+        "type": "inject",
+        "z": "3724184acb9f7b51",
+        "name": "On",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"beep\":false,\"powerOn\":true}",
+        "payloadType": "json",
+        "x": 250,
+        "y": 480,
+        "wires": [
+            [
+                "4631f09092497abc"
+            ]
+        ]
+    },
+    {
+        "id": "3483c91e9cfe8e0d",
+        "type": "inject",
+        "z": "3724184acb9f7b51",
+        "name": "Off",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"beep\":true,\"powerOn\":false}",
+        "payloadType": "json",
+        "x": 250,
+        "y": 560,
+        "wires": [
+            [
+                "4631f09092497abc"
+            ]
+        ]
+    },
+    {
+        "id": "2c14b551ab9b107f",
+        "type": "midea-hvac-config",
+        "name": "",
+        "method": "serialbridge",
+        "shost": "192.168.0.108",
+        "sport": "23",
+        "chost": "192.168.0.116",
+        "cport": "6444",
+        "polling": "60"
+    }
+]

@@ -1,114 +1,28 @@
-<script type="text/html" data-template-name="midea-hvac-config">
-  <div class="form-row">
-    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
-    <input type="text" id="node-config-input-name" placeholder="Name">
-  </div>
-
-  <div class="form-row">
-    <label for="node-config-input-method"><i class="fa fa-cog"></i> Method</label>
-    <select id="node-config-input-method" style="width: 70%;">
-      <option value="serialbridge">serialbridge</option>
-      <option value="sk103">sk103 (original Dongle)</option>
-    </select>
-  </div>
-
-  <div id="support-method-serialbridge" style="display: none;">
-    <div class="form-row">
-      <label for="node-config-input-shost"><i class="fa fa-globe"></i> Host</label>
-      <input type="text" id="node-config-input-shost" placeholder="Host">
-    </div>
-
-    <div class="form-row">
-      <label for="node-config-input-sport"><i class="fa fa-sign-in"></i> Port</label>
-      <input type="text" id="node-config-input-sport" placeholder="Port">
-    </div>
-  </div>
-
-  <div id="support-method-sk103" style="display: none;">
-    <div class="form-row">
-      <label for="node-config-input-chost"><i class="fa fa-globe"></i> Host</label>
-      <div style="display: inline-block; position: relative; width: 70%; height: 24px;">
-        <div style="position: absolute; left: 0; right: 42px;">
-          <input type="text" id="node-config-input-chost" style="width: 100%;" placeholder="Host">
-        </div>
-        <a id="node-config-input-discover" class="editor-button" style="position: absolute; right: 0; top: 0; width: 32px;"><i class="fa fa-search"></i></a>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <label for="node-config-input-cport"><i class="fa fa-sign-in"></i> Port</label>
-      <input type="text" id="node-config-input-cport" placeholder="Port">
-    </div>
-
-    <hr align="middle">
-    <div class="form-row">
-      <label style="width:100%;"><span>Cloud Midea (MSmartHome App)</span></label>
-    </div>
-
-    <div class="form-row">
-      <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
-      <input type="text" id="node-config-input-username" placeholder="Username">
-    </div>
-
-    <div class="form-row">
-      <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
-      <input type="password" id="node-config-input-password" placeholder="Password">
-    </div>
-
-    <div class="form-row">
-      <label for="node-config-input-id"><i class="fa fa-tasks"></i> Id</label>
-      <input type="text" id="node-config-input-id" placeholder="Id" disabled>
-    </div>
-
-    <div class="form-row">
-      <label for="node-config-input-key"><i class="fa fa-tasks"></i> Key</label>
-      <input type="text" id="node-config-input-key" placeholder="Key" disabled>
-    </div>
-
-    <div class="form-row">
-      <label for="node-config-input-token"><i class="fa fa-tasks"></i> Token</label>
-      <input type="text" id="node-config-input-token" placeholder="Token" disabled>
-    </div>
-
-    <div class="form-tips"><b>Important:</b> deploy config node after discover</div>
-  </div>
-</script>
-
-<script type="text/html" data-help-name="midea-hvac-config">
-  <p>Connection to Midea Cloud</p>
-  <h3>Configuration</h3>
-  <dl class="message-properties">
-    <dt class="optional">Name<span class="property-type">string</span></dt>
-    <dd>Choose any name to identify your node</dd>
-    <dt class="required">Midea Cloud Username<span class="property-type">string</span></dt>
-    <dd></dd>
-    <dt class="required">Midea Cloud Password<span class="property-type">string</span></dt>
-    <dd></dd>
-  </dl>
-</script>
-
 <script type="text/javascript">
   RED.nodes.registerType('midea-hvac-config', {
     category: 'config',
     defaults: {
       name: {},
       method: { value: 'serialbridge' },
-      shost: { value: '', required: true },
-      sport: { value: 23, required: true, validate: RED.validators.number() },
-      chost: { value: '', required: true },
-      cport: { value: 6444, required: true, validate: RED.validators.number() },
+      shost: { value: '', },
+      sport: { value: 23, validate: RED.validators.number() },
+      chost: { value: '' },
+      cport: { value: 6444, validate: RED.validators.number() },
+      polling: { value: 60, validate: RED.validators.number() },
     },
     credentials: {
-      username: { type: 'text', required: true },
-      password: { type: 'password', required: true },
-      id: { type: 'text', required: true },
-      key: { type: 'text', required: true },
-      token: { type: 'text', required: true },
+      username: { type: 'text' },
+      password: { type: 'password' },
+      id: { type: 'text' },
+      key: { type: 'text' },
+      token: { type: 'text' },
     },
     label: function () {
-      return (this.name || 'Midea HVAC');
+      return (this.name || 'HVAC');
     },
     oneditprepare: function () {
+      let node = this;
+
       function toggleBackend() {
         $("[id^=support-method]").hide();
         $("#support-method-" + $("#node-config-input-method option:selected").val()).show();
@@ -128,14 +42,15 @@
         let $password = $("#node-config-input-password").val();
 
         if (!$username || !$password) {
-          RED.notify(`Empty Username or Password for Cloud Midea (MSmartHome App)`, "error");
+          RED.notify(`Empty Username or Password for Midea Cloud (MSmartHome App)`, "error");
           return;
         }
 
-        RED.notify(`Discover Midea HVAC devices ... (10 sec)`);
+        RED.notify(`Discover Midea HVAC devices ... (~10 sec)`);
 
         $("#node-config-input-chost").prop("disabled", true);
-        $.getJSON("midea-hvac/discover", {
+        $.post("midea-hvac/discover", {
+          nodeId: node.id,
           username: $username,
           password: $password,
         }).done(function (devices) {
@@ -197,4 +112,102 @@
       });
     }
   });
+</script>
+
+<script type="text/html" data-template-name="midea-hvac-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-config-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-method"><i class="fa fa-cog"></i> Method</label>
+    <select id="node-config-input-method" style="width: 70%;">
+      <option value="serialbridge">serialbridge</option>
+      <option value="osk103">OSK103 (original Dongle)</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-polling"><i class="fa fa-clock-o"></i> Polling (sec)</label>
+    <input type="text" id="node-config-input-polling" placeholder="Polling">
+  </div>
+
+  <div id="support-method-serialbridge" style="display: none;">
+    <div class="form-row">
+      <label for="node-config-input-shost"><i class="fa fa-globe"></i> Host</label>
+      <input type="text" id="node-config-input-shost" placeholder="Host">
+    </div>
+
+    <div class="form-row">
+      <label for="node-config-input-sport"><i class="fa fa-sign-in"></i> Port</label>
+      <input type="text" id="node-config-input-sport" placeholder="Port">
+    </div>
+  </div>
+
+  <div id="support-method-osk103" style="display: none;">
+    <div class="form-row">
+      <label for="node-config-input-chost"><i class="fa fa-globe"></i> Host</label>
+      <div style="display: inline-block; position: relative; width: 70%; height: 24px;">
+        <div style="position: absolute; left: 0; right: 42px;">
+          <input type="text" id="node-config-input-chost" style="width: 100%;" placeholder="Host">
+        </div>
+        <a id="node-config-input-discover" class="editor-button" style="position: absolute; right: 0; top: 0; width: 32px;"><i class="fa fa-search"></i></a>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="node-config-input-cport"><i class="fa fa-sign-in"></i> Port</label>
+      <input type="text" id="node-config-input-cport" placeholder="Port">
+    </div>
+
+    <hr align="middle">
+    <div class="form-row">
+      <label style="width:100%;"><span>Midea Cloud (MSmartHome App)</span></label>
+    </div>
+
+    <div class="form-row">
+      <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+      <input type="text" id="node-config-input-username" placeholder="Username">
+    </div>
+
+    <div class="form-row">
+      <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
+      <input type="password" id="node-config-input-password" placeholder="Password">
+    </div>
+
+    <div class="form-row">
+      <label for="node-config-input-id"><i class="fa fa-tasks"></i> Id</label>
+      <input type="text" id="node-config-input-id" placeholder="Id" disabled>
+    </div>
+
+    <div class="form-row">
+      <label for="node-config-input-key"><i class="fa fa-tasks"></i> Key</label>
+      <input type="text" id="node-config-input-key" placeholder="Key" disabled>
+    </div>
+
+    <div class="form-row">
+      <label for="node-config-input-token"><i class="fa fa-tasks"></i> Token</label>
+      <input type="text" id="node-config-input-token" placeholder="Token" disabled>
+    </div>
+
+    <div class="form-tips"><b>Important:</b> deploy config node after discover</div>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="midea-hvac-config">
+  <p>Connection to HVAC</p>
+  <h3>Configuration</h3>
+  <dl class="message-properties">
+    <dt class="optional">Name<span class="property-type">string</span></dt>
+    <dd>Choose any name to identify your node</dd>
+    <dt class="required">Method<span class="property-type">string</span></dt>
+    <dd>Select OSK103 or serialbridge</dd>
+    <dt class="optional">Polling<span class="property-type">string</span></dt>
+    <dd>Polling interval HVAC in sec</dd>
+    <dt class="required">Host<span class="property-type">string</span></dt>
+    <dd></dd>
+    <dt class="required">Port<span class="property-type">string</span></dt>
+    <dd></dd>
+  </dl>
 </script>

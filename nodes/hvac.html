@@ -1,0 +1,63 @@
+<script type="text/javascript">
+  RED.nodes.registerType("midea-hvac", {
+    category: "devices",
+    paletteLabel: "midea",
+    color: "#D8BFD8",
+    defaults: {
+      name: {},
+      device: { value: "", type: "midea-hvac-config" },
+      retry: { value: true },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-snowflake-o",
+    align: "left",
+    label: function () {
+      return this.name || "midea";
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="midea-hvac">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-device"><i class="fa fa-tasks"></i> Device</label>
+    <input type="text" id="node-input-device">
+  </div>
+
+  <div class="form-row">
+    <label for='node-input-retry'><i class='fa fa-share-square'></i> Retry</label>
+    <input type="checkbox" id="node-input-retry" checked="checked" style="display: inline-block; width: auto; vertical-align: top;"> Retry request if not response or error</input>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="midea-hvac">
+  <p>Send command to device</p>
+  <h3>Configuration</h3>
+  <dl class="message-properties">
+    <dt class="optional">Name<span class="property-type">string</span></dt>
+    <dd>Choose any name to identify your node</dd>
+    <dt class="required">Device<span class="property-type">object</span></dt>
+    <dd>Choose the device to send/recv command</dd>
+    <dt class="optional">Retry<span class="property-type">checkbox</span></dt>
+    <dd>Retry request if not response or error</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <h5>Input</h5>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">string|object</span></dt>
+    <dd>getCapabilities, getPowerUsage, getStatus or object to set virables</dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <h5>Output</h5>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">object</span></dt>
+    <dd>Information from device</dd>
+  </dl>
+</script>
