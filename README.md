@@ -19,19 +19,19 @@ Nodes for controlling Midea HVAC in Node-RED.
 Thanks Rene Klootwijk for project [node-mideahvac](https://github.com/reneklootwijk/node-mideahvac) (more information and description)
 
 
-* midea: get/set value of device (support osk103/sk103 and serialbridge)
+* midea: get/set value of device (support OSK103/SK103 and serialbridge)
 
 ## Status
 
 All common functions of Airconditioners are supported, but support for specific features only available on some airconditioners might be incomplete or missing because it is unknown how they work and the inability to test.
 
-The direct communication with the original dongle, the SmartKey, has been tested with a SK103 running firmware 3.0.8 (+test 3.0.6). The discover command required to obtain the token and key required for direct communication only supports accounts that have been migrated to the MSmartHome app.
+The direct communication with the original dongle, the SmartKey, has been tested with a OSK103/SK103 running firmware 3.0.8 (+test 3.0.6). The discover command required to obtain the token and key required for direct communication only supports accounts that have been migrated to the MSmartHome app.
 
-:warning: :warning: :warning: The SK103 module, when using the SK103 communication method and poll the status frequently, might disconnect from your WiFi network and a powercycle is required to reconnect. Lowering the frequency of polling might prevent this.
+:warning: :warning: :warning: The OSK103/SK103 module, when using the OSK103/SK103 communication method and poll the status frequently, might disconnect from your WiFi network and a powercycle is required to reconnect. Lowering the frequency of polling might prevent this.
 
 ## Prerequisites
 
-For the direct communication method using an SK103 original SmartKey dongle is required running firmware version 3.0.8 (+test 3.0.6) and a MSmartHome account (Midea Air or NetHome Plus accounts do not work anymore because Midea removed the ability to retrieve the required key and token for these type of accounts).
+For the direct communication method using an OSK103/SK103 original SmartKey dongle is required running firmware version 3.0.8 (+test 3.0.6) and a MSmartHome account (Midea Air or NetHome Plus accounts do not work anymore because Midea removed the ability to retrieve the required key and token for these type of accounts).
 
 For the serialbridge (see [ADAPTER.md](https://github.com/reneklootwijk/node-mideahvac/blob/master/ADAPTER.md)) test [esp-link](https://github.com/jeelabs/esp-link/releases/tag/V3.0.14) 3.0.14
 
@@ -178,7 +178,7 @@ Example ([more](https://github.com/twocolors/node-red-contrib-midea-hvac/blob/ma
 Turn the unit on, set the temperature setpoint to 24°C.
 
 ```javascript
-{ powerOn: true, setpoint: 24 }
+{ powerOn: true, temperatureSetpoint: 24 }
 ```
 
 <img src="https://github.com/twocolors/node-red-contrib-midea-hvac/blob/master/readme/1.png?raw=true">

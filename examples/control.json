@@ -157,10 +157,35 @@
         ]
     },
     {
+        "id": "64e8ea8572b54dfa",
+        "type": "inject",
+        "z": "3724184acb9f7b51",
+        "name": "temperatureSetpoint",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"beep\":true,\"powerOn\":true,\"temperatureSetpoint\":25}",
+        "payloadType": "json",
+        "x": 210,
+        "y": 640,
+        "wires": [
+            [
+                "4631f09092497abc"
+            ]
+        ]
+    },
+    {
         "id": "2c14b551ab9b107f",
         "type": "midea-hvac-config",
         "name": "",
-        "method": "serialbridge",
+        "method": "osk103",
         "shost": "192.168.0.108",
         "sport": "23",
         "chost": "192.168.0.116",
