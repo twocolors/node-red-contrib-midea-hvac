@@ -2,11 +2,12 @@ module.exports = function (RED) {
   "use strict";
 
   function MideaHVAC(config) {
+    RED.nodes.createNode(this, config);
+
     let configNode = RED.nodes.getNode(config.device);
     if (!configNode) return;
-    const ac = configNode.ac;
 
-    RED.nodes.createNode(this, config);
+    const ac = configNode.ac;
     const node = this;
     node.state = {};
 
