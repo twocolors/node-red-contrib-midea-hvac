@@ -36,6 +36,11 @@ module.exports = function (RED) {
       node.onStatus({ color: "grey", text: "initiate ..." });
       configNode.on("updateStatus", node.onStatus);
       configNode.on("updateMessage", node.onMessage);
+
+      node.on("close", () => {
+        configNode.removeListener("updateStatus", node.onStatus);
+        configNode.removeListener("updateMessage", node.onMessage);
+      });
     }
 
     node.on("input", async (msg, send, done) => {

@@ -3,7 +3,7 @@
   "license": "GPL",
   "name": "node-red-contrib-midea-hvac",
   "description": "Nodes for controlling Midea HVAC in Node-RED",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "node-red": {
     "version": ">=2.2.0",
     "nodes": {
