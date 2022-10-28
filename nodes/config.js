@@ -3,6 +3,8 @@ module.exports = function (RED) {
 
   const discover = require("../lib/discover");
   const appliances = require("node-mideahvac");
+  const path = require('path');
+  const storage = require('node-persist');
 
   function MideaHVACConfig(config) {
     RED.nodes.createNode(this, config);
@@ -92,17 +94,30 @@ module.exports = function (RED) {
   });
 
   RED.httpAdmin.post("/midea-hvac/discover", async (req, res) => {
-    let { nodeId, username, password } = req.body;
+    let { nodeId, username, password, refresh} = req.body;
+    refresh = refresh ? ["1", "yes", "true", "on"].includes(refresh.toLowerCase()) : false;
 
-    if (!password || password === "__PWRD__") {
+    if (refresh && (!password || password === "__PWRD__")) {
       password = RED.nodes.getNode(nodeId)?.credentials?.password;
     }
 
     let devices = [];
 
     try {
-      devices = await discover(username, password);
-    } catch (error) {
+      // storage
+      let userDir = path.join(require('os').homedir(), '.node-red');
+      if (RED.settings.available() && RED.settings.userDir) {
+        userDir = RED.settings.userDir;
+      }
+      await storage.init({ dir: path.resolve(userDir, 'midea-hvac') });
+
+      if (refresh) {
+        devices = await discover(username, password);
+        await storage.set('devices', devices);
+      } else {
+        devices = await storage.get('devices');
+      }
+    } catch(error) {
       return res.json({ error: error });
     }
 

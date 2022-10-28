@@ -36,26 +36,31 @@
         $("#node-config-input-chost").val($val);
       }
 
-      function toggleInput() {
+      function toggleInput(refresh = false) {
         let $val = $("#node-config-input-chost").val();
         let $username = $("#node-config-input-username").val();
         let $password = $("#node-config-input-password").val();
 
-        if (!$username || !$password) {
+        if (refresh && (!$username || !$password)) {
           RED.notify(`Empty Username or Password for Midea Cloud (MSmartHome App)`, "error");
           return;
         }
 
-        RED.notify(`Discover Midea HVAC devices ... (~10 sec)`);
+        if (refresh) {
+          RED.notify(`Discover Midea HVAC devices ... (~10 sec)`);
+        }
 
         $("#node-config-input-chost").prop("disabled", true);
         $.post("midea-hvac/discover", {
           nodeId: node.id,
           username: $username,
           password: $password,
+          refresh: refresh
         }).done(function (devices) {
           if (devices.length === 0) {
-            RED.notify(`No Midea HVAC devices found`, "error");
+            if (refresh) {
+              RED.notify(`No Midea HVAC devices found`, "error");
+            }
             $("#node-config-input-chost").prop("disabled", false);
             return;
           }
@@ -73,14 +78,14 @@
           });
 
           $("#node-config-input-chost").on("change", changeChost);
-          if (devices.length === 1) {
+          if (!$val || devices.length === 1) {
             $val = devices[0].chost;
           }
 
           $("#node-config-input-chost").val($val);
           $("#node-config-input-chost").prop("disabled", false);
 
-          if (devices.length === 1) {
+          if ($val) {
             changeChost();
           }
         });
@@ -97,7 +102,7 @@
 
       $("#node-config-input-discover").click(function () {
         if ($("#node-config-input-chost").prop("tagName") === "INPUT") {
-          toggleInput();
+          toggleInput(true);
         } else {
           toggleSelect();
         }
@@ -106,6 +111,10 @@
       setTimeout(function () {
         toggleBackend();
       }, 150);
+
+      setTimeout(function () {
+        toggleInput();
+      }, 250);
 
       $("#node-config-input-method").change(function () {
         toggleBackend();
