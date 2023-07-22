@@ -3,7 +3,7 @@
   "license": "MIT",
   "name": "node-red-contrib-midea-hvac",
   "description": "Nodes for controlling Midea HVAC in Node-RED",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "node-red": {
     "version": ">=2.2.0",
     "nodes": {
@@ -12,7 +12,7 @@
     }
   },
   "dependencies": {
-    "node-mideahvac": "0.2.3",
+    "node-mideahvac": "^0.3.0",
     "node-persist": "^3.1.0"
   },
   "bugs": {
@@ -30,6 +30,6 @@
     "hvac"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   }
 }
